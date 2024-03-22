@@ -2344,8 +2344,9 @@ function FlatpickrInstance(
 
     self.selectedDateElem = target;
 
-    if (self.config.mode === "single") self.selectedDates = [selectedDate];
-    else if (self.config.mode === "multiple") {
+    if (self.config.mode === "single") {
+      self.selectedDates = selectedDate ? [selectedDate] : [];
+    } else if (self.config.mode === "multiple") {
       const selectedIndex = isDateSelected(selectedDate);
 
       if (selectedIndex) self.selectedDates.splice(parseInt(selectedIndex), 1);
@@ -2459,7 +2460,7 @@ function FlatpickrInstance(
     inputDate: DateOption | DateOption[],
     format?: string
   ) {
-    let dates: (Date | undefined)[] = [];
+    let dates: (Date | undefined | string)[] = [];
     if (inputDate instanceof Array)
       dates = inputDate.map((d) => self.parseDate(d, format));
     else if (inputDate instanceof Date || typeof inputDate === "number")
@@ -2468,7 +2469,12 @@ function FlatpickrInstance(
       switch (self.config.mode) {
         case "single":
         case "time":
-          dates = [self.parseDate(inputDate, format)];
+          const parsedDate = self.parseDate(inputDate, format);
+          if (self.config.allowInvalidPreload) {
+            dates = parsedDate ? [parsedDate] : [inputDate];
+          } else {
+            dates = [parsedDate];
+          }
           break;
 
         case "multiple":

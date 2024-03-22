@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="ie=edge">
+  <title>flatpickr quick start</title>
+
+  <link rel="stylesheet" href="dist/flatpickr.css">
+  <link rel="stylesheet" href="dist/ie.css">
+  <link rel="stylesheet" href="dist/plugins/confirmDate/confirmDate.css">
+  <link rel="stylesheet" href="dist/plugins/monthSelect/style.css">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.29.1/moment.min.js"></script>
+  <style type="text/css">
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI",
+        "Roboto", "Oxygen", "Ubuntu", "Helvetica Neue", Arial, sans-serif;
+    }
+
+    label > div {
+      margin-bottom: 4px;
+    }
+  </style>
+</head>
+<body>
+  <div style="padding:15vw">
+    <div>
+      <label>
+        <div>Date</div>
+        <input placeholder="Select Date..." class=date />
+      </label>
+
+    </div>
+  </div>
+  <div id="output" style="padding: 0 15vw;"></div>
+
+  <script>
+    const testScenarios = [
+      { inputStr: '2020 Decembers 20 1:4' },
+      { inputStr: '2020 Dec 2' },
+      { inputStr: '01 10 22 10:5'  },
+      { inputStr: '2023/08/17'  },
+      { inputStr: '12 25 2022'  },
+      { inputStr: '12 31 2022'  },
+      { inputStr: '02-12-2022'  },
+      { inputStr: '2024-03-21T08:30:00' },
+      { inputStr: '21 Augu 2 17:0' },
+      { inputStr: '21 Augu 2 171' },
+      { inputStr: '08 08 08 18:18' },
+    ];
+
+    const outputDiv = document.getElementById('output');
+
+    testScenarios.forEach(scenario => {
+      const date = moment(scenario.inputStr)
+      const formattedResult = `
+        <div style="margin-bottom: 20px;">
+          <p><strong>Example:</strong> ${scenario.inputStr}</p>
+        </div>
+      `;
+      outputDiv.innerHTML += formattedResult;
+    });
+  </script>
+  <!-- classList polyfill for IE9 -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/classlist/1.2.20171210/classList.min.js"></script>
+  <script src="./dist/flatpickr.js"></script>
+  <script src="./dist/plugins/rangePlugin.js"></script>
+  <script src="./dist/plugins/confirmDate/confirmDate.js"></script>
+  <script src="./dist/plugins/minMaxTimePlugin.js"></script>
+  <script src="./dist/plugins/monthSelect/index.js"></script>
+  <script src="./dist/plugins/scrollPlugin.js"></script>
+  <script src="./dist/plugins/weekSelect/weekSelect.js"></script>
+
+  <script>
+    var fp = flatpickr(".date", {
+      time_24hr: true,
+      defaultDate: null,
+      clickOpens: false,
+      dateFormat: "d M Y H:i",
+      allowInput: true,
+      allowInvalidPreload: true,
+      parseDate: (inputStr) => {
+        const date = moment(inputStr);
+        return date?.isValid() ? date?.toDate() : inputStr;
+      },
+    })
+  </script>
+</body>
+</html>

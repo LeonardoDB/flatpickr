@@ -30,6 +30,10 @@ export const createDateFormatter = ({
     return config.formatDate(dateObj, frmt, locale);
   }
 
+  if (config.allowInvalidPreload && typeof dateObj === "string") {
+    return dateObj;
+  }
+
   return frmt
     .split("")
     .map((c, i, arr) =>
@@ -52,7 +56,7 @@ export const createDateParser = ({ config = defaults, l10n = english }) => (
 
   const locale = customLocale || l10n;
 
-  let parsedDate: Date | undefined;
+  let parsedDate: Date | undefined | string;
   const dateOrig = date;
 
   if (date instanceof Date) parsedDate = new Date(date.getTime());
@@ -109,7 +113,9 @@ export const createDateParser = ({ config = defaults, l10n = english }) => (
           (parsedDate = fn(parsedDate as Date, val, locale) || parsedDate)
       );
 
-      parsedDate = matched ? parsedDate : undefined;
+      if (!matched) {
+        parsedDate = config.allowInvalidPreload ? date : undefined;
+      }
     }
   }
 
